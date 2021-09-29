@@ -1,11 +1,44 @@
 import * as robot from "robotjs";
+import * as fs from "fs";
 import handler from "serve-handler";
 import http from "http";
-import { Browser, firefox, Page } from "@playwright/test";
+import all, {
+  Browser,
+  firefox,
+  webkit,
+  Page,
+  Electron,
+  BrowserType,
+  chromium,
+} from "@playwright/test";
 import { Window, windowManager } from "node-window-manager";
 
 const URL = "http://localhost:3000/";
 const ACTION_KEY = process.platform === "darwin" ? "command" : "control";
+const BROWSER_TYPE: BrowserType = firefox;
+const BROWSER_CHANNEL:
+  | "chrome"
+  | "chrome-beta"
+  | "chrome-dev"
+  | "chrome-canary"
+  | "msedge"
+  | "msedge-beta"
+  | "msedge-dev"
+  | "msedge-canary"
+  | null = null;
+
+function mapBrowserTypeToName(browserType: BrowserType): string | null {
+  switch (browserType) {
+    case firefox:
+      return "firefox";
+    case webkit:
+      return "webkit";
+    case chromium:
+      return BROWSER_CHANNEL;
+    default:
+      throw "unrecognized browser";
+  }
+}
 
 async function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -46,6 +79,7 @@ async function main() {
   }
 
   console.log(JSON.stringify(results));
+  writeToFile();
 
   await tearDown();
 }
@@ -87,7 +121,10 @@ async function afterCheck(): Promise<boolean> {
 
 async function setUp() {
   server = await createStaticServer();
-  browser = await firefox.launch({ headless: false });
+  browser = await BROWSER_TYPE.launch({
+    headless: false,
+    channel: BROWSER_TYPE === chromium ? BROWSER_CHANNEL : "",
+  });
 
   await resetTestEnv();
 }
@@ -109,6 +146,15 @@ async function resetTestEnv() {
   });
 
   window = windowManager.getActiveWindow();
+}
+
+async function writeToFile() {
+  const browserName = mapBrowserTypeToName(BROWSER_TYPE);
+  const browserVersion = browser.version();
+  fs.writeFileSync(
+    `results_${browserName}_${browserVersion}_${process.platform}.json`,
+    JSON.stringify(results, null, 2)
+  );
 }
 
 async function tearDown() {
