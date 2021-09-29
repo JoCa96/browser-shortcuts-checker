@@ -1,0 +1,20 @@
+{
+  "name": "playwright-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/serve-handler": "^6.1.1"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.15.0",
+    "node-window-manager": "^2.2.4",
+    "robotjs": "^0.6.0",
+    "serve-handler": "^6.1.3"
+  }
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<head>
+  <title>test shortcuts</title>
+  <script>
+    document.addEventListener("keydown", (e) => {
+      let msg = {};
+      const { key, keyCode, metaKey, shiftKey, altKey, ctrlKey } = e;
+
+      if (metaKey) {
+        msg.modifier = "command";
+      } else if (shiftKey) {
+        msg.modifier = "shift";
+      } else if (altKey) {
+        msg.modifier = "alt";
+      } else if (ctrlKey) {
+        msg.modifier = "control";
+      } else {
+        msg.modifier = null;
+      }
+
+      msg.key = key;
+
+      if (!e.cancelable) {
+        msg.cancelable = false;
+      } else {
+        msg.cancelable = true;
+        e.preventDefault();
+      }
+
+      console.log(JSON.stringify(msg));
+
+      document.body.append(
+        JSON.stringify({ key, keyCode, metaKey, shiftKey, altKey, ctrlKey }),
+        "<br/>"
+      );
+    });
+  </script>
+</head>
