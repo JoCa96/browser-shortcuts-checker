@@ -15,7 +15,7 @@ import { Window, windowManager } from "node-window-manager";
 
 const URL = "http://localhost:3000/";
 const ACTION_KEY = process.platform === "darwin" ? "command" : "control";
-const BROWSER_TYPE: BrowserType = firefox;
+const BROWSER_TYPE: BrowserType = chromium;
 const BROWSER_CHANNEL:
   | "chrome"
   | "chrome-beta"
@@ -25,7 +25,7 @@ const BROWSER_CHANNEL:
   | "msedge-beta"
   | "msedge-dev"
   | "msedge-canary"
-  | null = null;
+  | null = "msedge";
 
 function mapBrowserTypeToName(browserType: BrowserType): string | null {
   switch (browserType) {
@@ -136,16 +136,36 @@ async function resetTestEnv() {
   }
   page = await browser.newPage();
 
-  await page.waitForEvent("domcontentloaded");
-
   await page.goto(URL);
 
+  await page.waitForEvent("domcontentloaded");
+
   page.addListener("console", (parsable) => {
-    msg = JSON.parse(parsable.text());
+    try {
+      msg = JSON.parse(parsable.text());
+    } catch (e) {}
     return true;
   });
 
+  await tabTillInWindow();
+
   window = windowManager.getActiveWindow();
+}
+
+async function tabTillInWindow() {
+  let count = 0;
+
+  while (!msg) {
+    count++;
+    robot.keyTap("tab");
+    await wait(50);
+
+    if (count > 10) {
+      throw new Error("Was not able to reach browser window with tabs");
+    }
+  }
+
+  msg = null;
 }
 
 async function writeToFile() {
