@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepare": "npx playwright install",
     "start": "ts-node index"
   },
   "author": "",
@@ -16,6 +17,7 @@
     "node-window-manager": "^2.2.4",
     "robotjs": "^0.6.0",
     "serve-handler": "^6.1.3",
-    "ts-node": "^10.2.1"
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
   }
 }
