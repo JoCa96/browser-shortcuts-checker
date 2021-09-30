@@ -502,5 +502,77 @@
       "modifier": "alt"
     },
     "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f1"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f2"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f3"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f4"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f5"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f6"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f7"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f8"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f9"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f10"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f11"
+    },
+    "success": true
+  },
+  {
+    "testArgs": {
+      "key": "f12"
+    },
+    "success": true
   }
 ]

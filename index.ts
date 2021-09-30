@@ -25,7 +25,7 @@ const BROWSER_CHANNEL:
   | "msedge-beta"
   | "msedge-dev"
   | "msedge-canary"
-  | null = "msedge";
+  | null = "chrome";
 
 function mapBrowserTypeToName(browserType: BrowserType): string | null {
   switch (browserType) {
@@ -55,10 +55,25 @@ async function createStaticServer() {
 }
 
 const alphabet = [..."abcdefghijklmnopqrstuvwxyz1234567890"];
+const fKeys = [
+  "f1",
+  "f2",
+  "f3",
+  "f4",
+  "f5",
+  "f6",
+  "f7",
+  "f8",
+  "f9",
+  "f10",
+  "f11",
+  "f12",
+];
 
 const testList = [
   ...alphabet.map((key) => ({ key, modifier: ACTION_KEY })),
   ...alphabet.map((key) => ({ key, modifier: "alt" })),
+  ...fKeys.map((key) => ({ key, modifier: undefined })),
 ];
 
 const results: any[] = [];
@@ -86,7 +101,11 @@ async function main() {
 
 async function test(testArgs: any) {
   msg = null;
-  robot.keyTap(testArgs.key, testArgs.modifier);
+  if (testArgs.modifier) {
+    robot.keyTap(testArgs.key, testArgs.modifier);
+  } else {
+    robot.keyTap(testArgs.key);
+  }
 
   await wait(250);
 
@@ -121,24 +140,25 @@ async function afterCheck(): Promise<boolean> {
 
 async function setUp() {
   server = await createStaticServer();
-  browser = await BROWSER_TYPE.launch({
-    headless: false,
-    channel: BROWSER_TYPE === chromium ? BROWSER_CHANNEL : "",
-  });
 
   await resetTestEnv();
 }
 
 async function resetTestEnv() {
-  const pages = browser.contexts()?.[0]?.pages();
-  if (pages) {
-    await Promise.all(pages.map((page) => page.close()));
+  if (browser) {
+    browser.close();
+    browser = null;
   }
+
+  browser = await BROWSER_TYPE.launch({
+    headless: false,
+    channel: BROWSER_TYPE === chromium ? BROWSER_CHANNEL : "",
+  });
   page = await browser.newPage();
 
   await page.goto(URL);
 
-  await page.waitForEvent("domcontentloaded");
+  // await page.waitForEvent("domcontentloaded");
 
   page.addListener("console", (parsable) => {
     try {
